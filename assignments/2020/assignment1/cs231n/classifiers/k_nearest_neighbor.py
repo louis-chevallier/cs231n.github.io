@@ -4,7 +4,7 @@ import numpy as np
 from past.builtins import xrange
 from utillc import *
 print_everything()
-__version__ = 1234
+__version__ = 12345
 print("k_nearest_neighbor.py")
 EKO()
 class KNearestNeighbor(object):
