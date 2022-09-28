@@ -2,14 +2,20 @@ from builtins import range
 from builtins import object
 import numpy as np
 from past.builtins import xrange
-
-
+from utillc import *
+print_everything()
+__version__ = 1234
+print("k_nearest_neighbor.py")
+EKO()
 class KNearestNeighbor(object):
     """ a kNN classifier with L2 distance """
 
     def __init__(self):
+        EKOT("constructor2339888")
         pass
-
+    def ff(self) : 
+        return 267
+        
     def train(self, X, y):
         """
         Train the classifier. For k-nearest neighbors this is just
@@ -181,3 +187,7 @@ class KNearestNeighbor(object):
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
         return y_pred
+    
+    def version(self) :
+        return 135
+            
