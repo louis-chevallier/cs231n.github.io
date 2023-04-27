@@ -2,7 +2,8 @@ from builtins import range
 from builtins import object
 import numpy as np
 from past.builtins import xrange
-
+from skimage.feature import hog
+import tqdm
 
 class KNearestNeighbor(object):
     """ a kNN classifier with L2 distance """
@@ -67,7 +68,23 @@ class KNearestNeighbor(object):
         num_test = X.shape[0]
         num_train = self.X_train.shape[0]
         dists = np.zeros((num_test, num_train))
+        fd_test, fd_train = {}, {}
+        print(X.shape, num_train)
+        C=3
+        for j in range(num_train):
+          fd_train[j] = hog(self.X_train[j].reshape(-1, 32, 3), orientations=8, 
+                          pixels_per_cell=(C,C),
+                          cells_per_block=(1, 1),
+                          channel_axis=-1)
         for i in range(num_test):
+          fd_test[i] = hog(X[i].reshape(-1, 32, 3), orientations=8, 
+                          pixels_per_cell=(C,C),
+                          cells_per_block=(1, 1),
+                          channel_axis=-1)
+
+
+
+        for i in tqdm.tqdm(range(num_test)):
             for j in range(num_train):
                 #####################################################################
                 # TODO:                                                             #
@@ -77,6 +94,9 @@ class KNearestNeighbor(object):
                 #####################################################################
                 # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+                #diff = np.square(X[i] - self.X_train[j])
+                diff = np.abs(fd_train[j] - fd_test[i])
+                dists[i][j] = np.sum(diff)
                 pass
 
                 # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -164,7 +184,8 @@ class KNearestNeighbor(object):
             #########################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-            pass
+            index_lbl = np.argsort(dists[i][:])[:k]
+            closest_y = self.y_train[index_lbl]
 
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
             #########################################################################
@@ -176,7 +197,17 @@ class KNearestNeighbor(object):
             #########################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-            pass
+            dic = {}
+            for label in closest_y:
+                if label in dic.keys():
+                    dic[label] += 1
+                else:
+                    dic[label] = 1
+
+            values = list(dic.values())
+            keys = list(dic.keys())
+
+            y_pred[i] = keys[values.index(max(values))]
 
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
