@@ -72,17 +72,28 @@ class KNearestNeighbor(object):
         print(X.shape, num_train)
         C=3
         for j in range(num_train):
-          fd_train[j] = hog(self.X_train[j].reshape(-1, 32, 3), orientations=8, 
+          
+          hg = hog(self.X_train[j].reshape(-1, 32, 3), orientations=8, 
                           pixels_per_cell=(C,C),
                           cells_per_block=(1, 1),
                           channel_axis=-1)
+          
+          hist = np.histogram(self.X_train[j].reshape(-1, 32, 3), 
+                        bins=100)[0]
+          fd_train[j] = np.hstack((hg, hist))
+
+      
+
         for i in range(num_test):
-          fd_test[i] = hog(X[i].reshape(-1, 32, 3), orientations=8, 
+          hg = hog(X[i].reshape(-1, 32, 3), orientations=8, 
                           pixels_per_cell=(C,C),
                           cells_per_block=(1, 1),
                           channel_axis=-1)
 
-
+          
+          hist = np.histogram(X[i].reshape(-1, 32, 3), 
+                        bins=100)[0]
+          fd_test[i] = np.hstack((hg, hist))
 
         for i in tqdm.tqdm(range(num_test)):
             for j in range(num_train):
